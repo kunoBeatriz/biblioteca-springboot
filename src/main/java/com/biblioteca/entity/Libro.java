@@ -8,10 +8,12 @@ public class Libro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idLibro;
-
     private String nombre;
     private String codigo;
-    private String autor;
+
+    @ManyToOne
+    @JoinColumn(name = "autor_id", nullable = false)
+    private Autor idAutor;
 
     public Long getIdLibro() {
         return idLibro;
@@ -37,11 +39,47 @@ public class Libro {
         this.codigo = codigo;
     }
 
-    public String getAutor() {
-        return autor;
+    public Autor getIdAutor() {
+        return idAutor;
     }
 
-    public void setAutor(String autor) {
-        this.autor = autor;
+    public void setIdAutor(Autor idAutor) {
+        this.idAutor = idAutor;
     }
+
+    public static LibroBuilder builder() {
+        return new LibroBuilder();
+    }
+    public static final class LibroBuilder {
+        private Libro libro;
+
+        private LibroBuilder() {
+            libro = new Libro();
+        }
+
+        public LibroBuilder idLibro(Long idLibro) {
+            libro.setIdLibro(idLibro);
+            return this;
+        }
+
+        public LibroBuilder nombre(String nombre) {
+            libro.setNombre(nombre);
+            return this;
+        }
+
+        public LibroBuilder codigo(String codigo) {
+            libro.setCodigo(codigo);
+            return this;
+        }
+
+        public LibroBuilder idAutor(Autor idAutor) {
+            libro.setIdAutor(idAutor);
+            return this;
+        }
+
+        public Libro build() {
+            return libro;
+        }
+    }
+
 }

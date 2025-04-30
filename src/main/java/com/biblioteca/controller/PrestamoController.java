@@ -1,21 +1,39 @@
 package com.biblioteca.controller;
 
 import com.biblioteca.entity.Prestamo;
-import com.biblioteca.repository.PrestamoRepository;
+import com.biblioteca.repository.RepositoryJPA;
+import com.biblioteca.repository.PrestamosRepositoryNormal;
+import com.biblioteca.repository.PrestamosRepositoryUrgente;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/prestamos")
 public class PrestamoController {
 
-    private final PrestamoRepository prestamoRepository;
+    private final RepositoryJPA prestamoRepository;
 
-    public PrestamoController(PrestamoRepository prestamoRepository) {
+    public PrestamoController(RepositoryJPA prestamoRepository) {
         this.prestamoRepository = prestamoRepository;
     }
 
+    @PostMapping("/procesar")
+    public String procesar(@RequestBody Prestamo prestamo, @RequestParam boolean urgente) {
+        PrestamoContext context = new PrestamoContext();
+
+        if (urgente) {
+            context.setStrategy(new PrestamosRepositoryUrgente());
+        } else {
+            context.setStrategy(new PrestamosRepositoryNormal());
+        }
+        return context.procesarPrestamo(prestamo);
+    }
+
+    @DeleteMapping("/{id}")
+    public void eliminar(@PathVariable Long id) {
+        prestamoRepository.deleteById(id);
+    }
+
+    /*
     @GetMapping
     public List<Prestamo> listar() {
         return prestamoRepository.findAll();
@@ -36,10 +54,12 @@ public class PrestamoController {
         prestamo.setIdPrestamo(id);
         return prestamoRepository.save(prestamo);
     }
-
     @DeleteMapping("/{id}")
     public void eliminar(@PathVariable Long id) {
         prestamoRepository.deleteById(id);
     }
+     */
+
+
 
 }

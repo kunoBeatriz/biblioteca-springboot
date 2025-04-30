@@ -1,5 +1,6 @@
 package com.biblioteca.controller;
 
+import com.biblioteca.dto.LibroDto;
 import com.biblioteca.entity.Libro;
 import com.biblioteca.repository.LibroRepository;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,12 @@ public class LibroController {
         return libroRepository.findAll();
     }
 
+    @GetMapping("/{id}")
+    public LibroDto getLibro(@PathVariable Long id) {
+        Libro libro = libroRepository.findById(id).orElseThrow();
+        return LibroDto.mapearLibro(libro);
+    }
+
     @PostMapping("/guardar")
     public Libro guardar(@RequestBody Libro libro) {
         return libroRepository.save(libro);
@@ -31,12 +38,12 @@ public class LibroController {
         libro.setIdLibro(id);
         return libroRepository.save(libro);
     }
-
+/*
     @GetMapping("/{id}")
     public Libro obtener(@PathVariable Long id) {
         return libroRepository.findById(id).orElse(null);
     }
-
+*/
 
 
     @DeleteMapping("/{id}")
